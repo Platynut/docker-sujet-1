@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const { Sequelize } = require('sequelize');
-const UserDto = require('../dto/UserDto');
+const UserDto = require('./dto/UserDto');
 const User = require('../model/user.model');
 
 exports.getAllUsers = async (req, res) => {

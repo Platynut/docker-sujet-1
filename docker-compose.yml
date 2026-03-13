@@ -2,9 +2,8 @@ services:
   user-api:
     container_name: user-api
     build:
-      context: ./src
+      context: ./src/users
       dockerfile: Dockerfile
-    command: node users_app.js
     ports:
       - "5001:5001"
     environment:
@@ -25,9 +24,8 @@ services:
   product-api:
     container_name: product-api
     build:
-      context: ./src
+      context: ./src/products
       dockerfile: Dockerfile
-    command: node products_app.js
     ports:
       - "5002:5002"
     environment:
@@ -45,7 +43,29 @@ services:
     volumes:
       - product_db_data:/var/lib/mysql
 
+  order-api:
+    container_name: order-api
+    build:
+      context: ./src/orders
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
+      - DB_HOST=order-db
+    depends_on:
+      - order-db
+
+  order-db:
+    image: mysql:8.0
+    container_name: order-db
+    environment:
+      MYSQL_ROOT_PASSWORD: order_secret
+      MYSQL_DATABASE: order_database
+    volumes:
+      - order_db_data:/var/lib/mysql
 
 volumes:
   user_db_data:
   product_db_data:
+  order_db_data:

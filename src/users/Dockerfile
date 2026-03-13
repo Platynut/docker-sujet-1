@@ -7,3 +7,5 @@ COPY package.json ./
 RUN npm install
 
 COPY . ./
+
+CMD ["node", "users_app.js"]
