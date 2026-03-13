@@ -6,6 +6,6 @@ app.use(express.json());
 
 app.use('/users', userRoutes);
 
-app.listen(80, () => {
-    console.log("Serveur démarré sur http://localhost:80");
+app.listen(3000, () => {
+    console.log("Serveur démarré sur http://localhost:3000");
 });

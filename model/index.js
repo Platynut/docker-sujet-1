@@ -1,9 +1,7 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-require('dotenv').config({
-    path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV}`)
-});
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -12,7 +10,11 @@ const sequelize = new Sequelize(
     {
         host: process.env.DB_HOST,
         dialect: 'mysql',
-        logging: false
+        port: process.env.DB_PORT || 3306,
+        logging: false,
+        retry: {
+            max: 5
+        }
     }
 );
 
