@@ -1,10 +1,13 @@
 services:
   user-api:
     container_name: user-api
-    build: ./user-service
+    build:
+      context: ./src
+      dockerfile: Dockerfile
     ports:
       - "5001:5001"
     environment:
+      - PORT=5001
       - DB_HOST=user-db
     depends_on:
       - user-db
@@ -15,13 +18,19 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: user_secret
       MYSQL_DATABASE: user_database
+    volumes:
+      - user_db_data:/var/lib/mysql
 
   product-api:
     container_name: product-api
-    build: ./product-service
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    command: node products_app.js
     ports:
       - "5002:5002"
     environment:
+      - PORT=5002
       - DB_HOST=product-db
     depends_on:
       - product-db
@@ -32,3 +41,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: product_secret
       MYSQL_DATABASE: product_database
+    volumes:
+      - product_db_data:/var/lib/mysql
+
+
+volumes:
+  user_db_data:
+  product_db_data:
