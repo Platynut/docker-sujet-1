@@ -1,0 +1,25 @@
+  product-api:
+    container_name: product-api
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    command: node products_app.js
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - DB_HOST=product-db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - product-db
+
+  product-db:
+    image: mysql:8.0
+    container_name: product-db
+    environment:
+      MYSQL_ROOT_PASSWORD: product_secret
+      MYSQL_DATABASE: product_database
+    volumes:
+      - product_db_data:/var/lib/mysql
