@@ -8,4 +8,6 @@ RUN npm install
 
 COPY . ./
 
+EXPOSE 5003
+
 CMD ["node", "orders_app.js"]

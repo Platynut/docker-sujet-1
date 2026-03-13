@@ -8,4 +8,6 @@ RUN npm install
 
 COPY . ./
 
+EXPOSE 5002
+
 CMD ["node", "products_app.js"]

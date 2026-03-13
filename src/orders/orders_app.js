@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
-const productRoutes = require('./route/orders.route');
+const orderRoute = require('./route/order.route');
 
 app.use(express.json());
 
-app.use('/products', productRoutes);
+app.use('/orders', orderRoute);
 
 const PORT = 5003;
 

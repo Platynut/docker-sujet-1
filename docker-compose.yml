@@ -4,11 +4,15 @@ services:
     build:
       context: ./src/users
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "5001:5001"
     environment:
       - PORT=5001
       - DB_HOST=user-db
+      - DB_USER=user
+      - DB_PASS=password
+      - DB_NAME=user_test
     depends_on:
       - user-db
 
@@ -16,8 +20,11 @@ services:
     image: mysql:8.0
     container_name: user-db
     environment:
-      MYSQL_ROOT_PASSWORD: user_secret
-      MYSQL_DATABASE: user_database
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: user_test
+    restart: unless-stopped
     volumes:
       - user_db_data:/var/lib/mysql
 
@@ -26,11 +33,15 @@ services:
     build:
       context: ./src/products
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "5002:5002"
     environment:
       - PORT=5002
       - DB_HOST=product-db
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=user_test
     depends_on:
       - product-db
 
@@ -38,8 +49,11 @@ services:
     image: mysql:8.0
     container_name: product-db
     environment:
-      MYSQL_ROOT_PASSWORD: product_secret
-      MYSQL_DATABASE: product_database
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: user_test
+    restart: unless-stopped
     volumes:
       - product_db_data:/var/lib/mysql
 
@@ -48,11 +62,15 @@ services:
     build:
       context: ./src/orders
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "5003:5003"
     environment:
       - PORT=5003
       - DB_HOST=order-db
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_NAME=user_test
     depends_on:
       - order-db
 
@@ -60,8 +78,11 @@ services:
     image: mysql:8.0
     container_name: order-db
     environment:
-      MYSQL_ROOT_PASSWORD: order_secret
-      MYSQL_DATABASE: order_database
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: user_test
+    restart: unless-stopped
     volumes:
       - order_db_data:/var/lib/mysql
 
