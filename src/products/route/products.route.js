@@ -7,6 +7,8 @@ router.get("/products/:id", controller.getProductById);
 router.post("/products", controller.createProduct);
 router.put("/products/:id", controller.updateProduct);
 router.delete("/products/:id", controller.deleteProduct);
-router.get("/health", controller.health);
+router.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
 
 module.exports = router;

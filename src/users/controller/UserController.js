@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const { Sequelize } = require('sequelize');
-const UserDto = require('./dto/UserDto');
 const User = require('../model/user.model');
 
 exports.getAllUsers = async (req, res) => {
@@ -32,17 +31,19 @@ exports.getUserById = async (req, res) => {
 }
 
 exports.createUser = async (req, res) => {
-    const { valid, errors, value } = UserDto.validate(req.body);
-    if (!valid) {
-        return res.status(400).json({ errors });
+    const { email, password, username: providedUsername } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
     }
 
     try {
-        let username = value.username || value.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-        const passwordHash = await hashPassword(value.password);
+        const username = providedUsername || email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+        const passwordHash = await hashPassword(password);
 
         const user = await User.create({
-            email: value.email,
+            email: email.toLowerCase(),
             username,
             passwordHash
         });
@@ -51,13 +52,14 @@ exports.createUser = async (req, res) => {
         delete userSafe.passwordHash;
 
         return res.status(201).json({ user: userSafe });
+
     } catch (err) {
-        if (err instanceof Sequelize.UniqueConstraintError || err.name === 'SequelizeUniqueConstraintError') {
+        if (err.name === 'SequelizeUniqueConstraintError' || err instanceof Sequelize.UniqueConstraintError) {
             const field = err.errors[0]?.path || 'field';
-            return res.status(409).json({ error: `This ${field} already in use` });
+            return res.status(409).json({ error: `This ${field} is already in use` });
         }
 
-        console.error(err);
+        console.error("Error in createUser:", err);
         return res.status(500).json({ error: 'internal server error' });
     }
 };

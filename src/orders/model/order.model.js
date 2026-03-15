@@ -17,3 +17,5 @@ const Order = db.define(
     timestamps: false
   }
 );
+
+module.exports = Order;
