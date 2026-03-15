@@ -11,7 +11,7 @@ exports.listOrders = async (req, res) => {
 
 exports.getOrder = async (req, res) => {
   try {
-    const order = await OrderModel.findById(req.params.id);
+    const order = await OrderModel.findByPk(req.params.id);
     if (!order) return res.status(404).json({ error: 'Order not found' });
     res.json(order);
   } catch (err) {
@@ -21,7 +21,7 @@ exports.getOrder = async (req, res) => {
 
 exports.getOrdersByUser = async (req, res) => {
   try {
-    const orders = await OrderModel.findByUserId(req.params.user_id);
+    const orders = await OrderModel.findAll({ where: { user_id: req.params.user_id } });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -31,9 +31,15 @@ exports.getOrdersByUser = async (req, res) => {
 exports.createOrder = async (req, res) => {
   try {
     const { user_id, product_id, quantity, total_price, status } = req.body;
-    const order = await OrderModel.create(user_id, product_id, quantity, total_price, status);
+    if (!user_id || !product_id || total_price === undefined || total_price === null) {
+      return res.status(400).json({ error: 'user_id, product_id and total_price are required' });
+    }
+    const order = await OrderModel.create({ user_id, product_id, quantity, total_price, status });
     res.status(201).json(order);
   } catch (err) {
+    if (err.name && (err.name === 'SequelizeValidationError' || err.name === 'SequelizeDatabaseError')) {
+      return res.status(400).json({ error: err.message });
+    }
     res.status(500).json({ error: err.message });
   }
 };
